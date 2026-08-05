@@ -1,308 +1,340 @@
-import { useEffect, useRef, useState, useCallback } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import TokenIcon from '@/components/TokenIcon'
 import { getTokenData } from '@/lib/tokenData'
 
-// ─── Tab definitions ──────────────────────────────────────────────────────────
+// ─── Sidebar nav items ────────────────────────────────────────────────────────
 
-const TABS = [
-  'Trending Tokens',
-  'Smart Stats',
-  'Top Mentions',
-  'Multi Keyword Search',
-  'Event Summary',
-  'Trending Contracts',
+const NAV_ITEMS = [
+  {
+    id: 'trending',
+    label: 'Trending Tokens',
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M2 12L6 7l3 3 5-6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    ),
+  },
+  {
+    id: 'stats',
+    label: 'Smart Stats',
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <rect x="2" y="9" width="3" height="5" rx="1" fill="currentColor" opacity=".5"/>
+        <rect x="6.5" y="6" width="3" height="8" rx="1" fill="currentColor" opacity=".7"/>
+        <rect x="11" y="2" width="3" height="12" rx="1" fill="currentColor"/>
+      </svg>
+    ),
+  },
+  {
+    id: 'mentions',
+    label: 'Top Mentions',
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.5"/>
+        <path d="M5.5 8.5c.5 1 1.5 1.5 2.5 1.5s2-.5 2.5-1.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+        <circle cx="5.5" cy="6.5" r="1" fill="currentColor"/>
+        <circle cx="10.5" cy="6.5" r="1" fill="currentColor"/>
+      </svg>
+    ),
+  },
+  {
+    id: 'search',
+    label: 'Multi Keyword',
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <circle cx="7" cy="7" r="4.5" stroke="currentColor" strokeWidth="1.5"/>
+        <path d="M10.5 10.5L13 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+      </svg>
+    ),
+  },
+  {
+    id: 'events',
+    label: 'Event Summary',
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <rect x="2" y="3" width="12" height="11" rx="2" stroke="currentColor" strokeWidth="1.5"/>
+        <path d="M5 2v2M11 2v2M2 7h12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+      </svg>
+    ),
+  },
+  {
+    id: 'contracts',
+    label: 'Trending Contracts',
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M4 2h6l4 4v8a1 1 0 01-1 1H4a1 1 0 01-1-1V3a1 1 0 011-1z" stroke="currentColor" strokeWidth="1.5"/>
+        <path d="M10 2v4h4M6 9h4M6 12h2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+      </svg>
+    ),
+  },
 ] as const
 
-type Tab = typeof TABS[number]
+type NavId = typeof NAV_ITEMS[number]['id']
 
-// ─── Individual tab content panels ───────────────────────────────────────────
+// ─── Panel components ─────────────────────────────────────────────────────────
 
-function TrendingTokensPanel() {
+function TrendingPanel() {
   const rows = [
-    { symbol: 'SOL',  name: 'Solana',   mentions: '18.4K', change: '+42%', rank: 1 },
-    { symbol: 'BTC',  name: 'Bitcoin',  mentions: '15.2K', change: '+31%', rank: 2 },
-    { symbol: 'ETH',  name: 'Ethereum', mentions: '12.8K', change: '+24%', rank: 3 },
-    { symbol: 'PEPE', name: 'Pepe',     mentions: '9.1K',  change: '+18%', rank: 4 },
-    { symbol: 'ARB',  name: 'Arbitrum', mentions: '7.3K',  change: '+12%', rank: 5 },
+    { symbol: 'SOL',  name: 'Solana',   mentions: '18.4K', change: '+42%' },
+    { symbol: 'BTC',  name: 'Bitcoin',  mentions: '15.2K', change: '+31%' },
+    { symbol: 'ETH',  name: 'Ethereum', mentions: '12.8K', change: '+24%' },
+    { symbol: 'PEPE', name: 'Pepe',     mentions: '9.1K',  change: '+18%' },
+    { symbol: 'ARB',  name: 'Arbitrum', mentions: '7.3K',  change: '+12%' },
   ]
   return (
-    <div className="tab-panel">
-      <div className="tab-panel-header">
-        <span className="tab-panel-title">Trending Tokens</span>
-        <span className="tab-live-badge">LIVE</span>
+    <>
+      <div className="pp-panel-head">
+        <span className="pp-panel-title">Trending Tokens</span>
+        <span className="pp-badge-live">LIVE</span>
       </div>
-      <div className="tab-panel-cols">
-        <span className="col-label">#</span>
-        <span className="col-label">Token</span>
-        <span className="col-label right">Mentions</span>
-        <span className="col-label right">24h</span>
-        <span className="col-label right">Signal</span>
+      <div className="pp-col-row">
+        <span className="pp-col">#</span>
+        <span className="pp-col">Token</span>
+        <span className="pp-col right">Mentions</span>
+        <span className="pp-col right">24h</span>
+        <span className="pp-col center">Signal</span>
       </div>
       {rows.map((r, i) => (
-        <div key={r.symbol} className="tab-token-row" style={{ animationDelay: `${i * 60}ms` }}>
-          <span className="tab-rank">{r.rank}</span>
-          <span className="tab-token-identity">
-            <TokenIcon symbol={r.symbol} image={getTokenData(r.symbol).image} size={20} />
-            <span className="tab-token-symbol">{r.name}</span>
-            <span className="tab-token-ticker">${r.symbol}</span>
+        <div key={r.symbol} className="pp-row" style={{ '--i': i } as React.CSSProperties}>
+          <span className="pp-rank">{i + 1}</span>
+          <span className="pp-token-id">
+            <TokenIcon symbol={r.symbol} image={getTokenData(r.symbol).image} size={22} />
+            <span className="pp-token-name">{r.name}</span>
+            <span className="pp-token-sym">${r.symbol}</span>
           </span>
-          <span className="tab-mentions">{r.mentions}</span>
-          <span className="tab-change positive">{r.change}</span>
-          <span className="tab-signal-dot"></span>
+          <span className="pp-mentions">{r.mentions}</span>
+          <span className="pp-change pos">{r.change}</span>
+          <span className="pp-dot-live" />
         </div>
       ))}
-    </div>
+    </>
   )
 }
 
-function SmartStatsPanel() {
-  const stats = [
-    { label: 'Total Mentions',    value: '124.8K', sub: 'Last 24h',      up: true  },
-    { label: 'Bullish Sentiment', value: '72%',    sub: '+8% vs yesterday', up: true  },
-    { label: 'Active Tokens',     value: '452',    sub: 'Tracked now',   up: true  },
-    { label: 'Bearish Signals',   value: '14',     sub: 'Flagged tokens', up: false },
+function StatsPanel() {
+  const cards = [
+    { label: 'Total Mentions',    value: '124.8K', sub: 'Last 24h',         pos: true  },
+    { label: 'Bullish Sentiment', value: '72%',    sub: '+8% vs yesterday', pos: true  },
+    { label: 'Active Tokens',     value: '452',    sub: 'Tracked now',      pos: true  },
+    { label: 'Bearish Signals',   value: '14',     sub: 'Flagged tokens',   pos: false },
   ]
   return (
-    <div className="tab-panel">
-      <div className="tab-panel-header">
-        <span className="tab-panel-title">Smart Stats</span>
-        <span className="tab-live-badge">LIVE</span>
+    <>
+      <div className="pp-panel-head">
+        <span className="pp-panel-title">Smart Stats</span>
+        <span className="pp-badge-live">LIVE</span>
       </div>
-      <div className="tab-stats-grid">
-        {stats.map((s, i) => (
-          <div key={i} className="tab-stat-card" style={{ animationDelay: `${i * 80}ms` }}>
-            <div className="tab-stat-label">{s.label}</div>
-            <div className={`tab-stat-value ${s.up ? 'positive' : 'negative'}`}>{s.value}</div>
-            <div className="tab-stat-sub">{s.sub}</div>
+      <div className="pp-stats-grid">
+        {cards.map((c, i) => (
+          <div key={i} className="pp-stat-card" style={{ '--i': i } as React.CSSProperties}>
+            <div className="pp-stat-label">{c.label}</div>
+            <div className={`pp-stat-val ${c.pos ? 'pos' : 'neg'}`}>{c.value}</div>
+            <div className="pp-stat-sub">{c.sub}</div>
           </div>
         ))}
       </div>
-      <div className="tab-sentiment-bar-wrap">
-        <div className="tab-sb-label">Market Sentiment</div>
-        <div className="tab-sb-track">
-          <div className="tab-sb-fill" style={{ width: '72%' }} />
-        </div>
-        <div className="tab-sb-ends">
-          <span className="positive">72% Bullish</span>
-          <span className="negative">28% Bearish</span>
+      <div className="pp-sentiment-block">
+        <div className="pp-sb-label">Market Sentiment</div>
+        <div className="pp-sb-track"><div className="pp-sb-fill" /></div>
+        <div className="pp-sb-ends">
+          <span className="pos">72% Bullish</span>
+          <span className="neg">28% Bearish</span>
         </div>
       </div>
-    </div>
+    </>
   )
 }
 
-function TopMentionsPanel() {
+function MentionsPanel() {
   const items = [
-    { symbol: 'SOL',  ticker: '$SOL',  count: '18,412', pct: 92 },
-    { symbol: 'BTC',  ticker: '$BTC',  count: '15,280', pct: 76 },
-    { symbol: 'ETH',  ticker: '$ETH',  count: '12,804', pct: 64 },
-    { symbol: 'PEPE', ticker: '$PEPE', count: '9,103',  pct: 46 },
-    { symbol: 'ARB',  ticker: '$ARB',  count: '7,341',  pct: 37 },
+    { symbol: 'SOL',  pct: 92, count: '18,412' },
+    { symbol: 'BTC',  pct: 74, count: '15,280' },
+    { symbol: 'ETH',  pct: 62, count: '12,804' },
+    { symbol: 'PEPE', pct: 44, count: '9,103'  },
+    { symbol: 'ARB',  pct: 36, count: '7,341'  },
   ]
   return (
-    <div className="tab-panel">
-      <div className="tab-panel-header">
-        <span className="tab-panel-title">Top Mentions</span>
-        <span className="tab-period-badge">24h</span>
+    <>
+      <div className="pp-panel-head">
+        <span className="pp-panel-title">Top Mentions</span>
+        <span className="pp-badge-period">24h</span>
       </div>
-      {items.map((item, i) => (
-        <div key={item.symbol} className="tab-mention-row" style={{ animationDelay: `${i * 60}ms` }}>
-          <TokenIcon symbol={item.symbol} image={getTokenData(item.symbol).image} size={18} />
-          <span className="tab-mention-ticker">{item.ticker}</span>
-          <div className="tab-mention-bar-wrap">
-            <div className="tab-mention-bar" style={{ width: `${item.pct}%` }} />
+      {items.map((r, i) => (
+        <div key={r.symbol} className="pp-mention-row" style={{ '--i': i } as React.CSSProperties}>
+          <TokenIcon symbol={r.symbol} image={getTokenData(r.symbol).image} size={20} />
+          <span className="pp-mention-sym">${r.symbol}</span>
+          <div className="pp-bar-track">
+            <div className="pp-bar-fill" style={{ '--pct': `${r.pct}%` } as React.CSSProperties} />
           </div>
-          <span className="tab-mention-count">{item.count}</span>
+          <span className="pp-mention-count">{r.count}</span>
         </div>
       ))}
-    </div>
+    </>
   )
 }
 
-function MultiKeywordPanel() {
-  const keywords = ['solana', 'bullrun', 'defi summer']
-  const results = [
-    { kw: 'solana',    count: '12.4K', change: '+38%', color: '#F97316' },
-    { kw: 'bullrun',   count: '8.1K',  change: '+22%', color: '#3B82F6' },
-    { kw: 'defi summer', count: '5.7K', change: '+15%', color: '#8B5CF6' },
+function SearchPanel() {
+  const kws = [
+    { label: 'solana',      pct: 72, count: '12.4K', change: '+38%', color: '#F97316' },
+    { label: 'bullrun',     pct: 52, count: '8.1K',  change: '+22%', color: '#3B82F6' },
+    { label: 'defi summer', pct: 38, count: '5.7K',  change: '+15%', color: '#8B5CF6' },
   ]
   return (
-    <div className="tab-panel">
-      <div className="tab-panel-header">
-        <span className="tab-panel-title">Multi Keyword Search</span>
+    <>
+      <div className="pp-panel-head">
+        <span className="pp-panel-title">Multi Keyword Search</span>
       </div>
-      <div className="tab-keyword-chips">
-        {keywords.map((k, i) => (
-          <span key={i} className="tab-keyword-chip">{k} ×</span>
+      <div className="pp-kw-chips">
+        {kws.map((k, i) => (
+          <span key={i} className="pp-kw-chip" style={{ '--c': k.color } as React.CSSProperties}>{k.label} ×</span>
         ))}
-        <span className="tab-keyword-add">+ Add keyword</span>
+        <span className="pp-kw-add">+ Add keyword</span>
       </div>
-      <div className="tab-kw-results">
-        {results.map((r, i) => (
-          <div key={i} className="tab-kw-row" style={{ animationDelay: `${i * 80}ms` }}>
-            <span className="tab-kw-dot" style={{ background: r.color }} />
-            <span className="tab-kw-label">{r.kw}</span>
-            <div className="tab-kw-bar-wrap">
-              <div className="tab-kw-bar" style={{ width: `${60 + i * 15}%`, background: r.color + '33', borderColor: r.color }} />
+      <div className="pp-kw-list">
+        {kws.map((k, i) => (
+          <div key={i} className="pp-kw-row" style={{ '--i': i } as React.CSSProperties}>
+            <span className="pp-kw-dot" style={{ background: k.color }} />
+            <span className="pp-kw-label">{k.label}</span>
+            <div className="pp-bar-track">
+              <div className="pp-kw-bar" style={{ '--pct': `${k.pct}%`, '--c': k.color } as React.CSSProperties} />
             </div>
-            <span className="tab-kw-count">{r.count}</span>
-            <span className="tab-change positive">{r.change}</span>
+            <span className="pp-mention-count">{k.count}</span>
+            <span className="pp-change pos">{k.change}</span>
           </div>
         ))}
       </div>
-    </div>
+    </>
   )
 }
 
-function EventSummaryPanel() {
+function EventsPanel() {
   const events = [
-    {
-      title: 'ETH Pectra Upgrade Live',
-      summary: 'Ethereum\'s Pectra upgrade activated on mainnet. Social mentions spiked 340% within 2 hours.',
-      time: '2h ago',
-      symbol: 'ETH',
-      impact: 'High',
-    },
-    {
-      title: 'SOL DEX Volume Record',
-      summary: 'Solana-based DEXs hit $1.2B in 24h volume. Community discussion trending across X and Farcaster.',
-      time: '5h ago',
-      symbol: 'SOL',
-      impact: 'Medium',
-    },
-    {
-      title: 'PEPE Social Surge',
-      summary: 'PEPE token gained 31% in social mentions. Coordinated community campaign detected.',
-      time: '8h ago',
-      symbol: 'PEPE',
-      impact: 'Medium',
-    },
+    { symbol: 'ETH',  title: 'ETH Pectra Upgrade Live',   time: '2h ago', impact: 'High',   summary: "Ethereum's Pectra upgrade activated on mainnet. Social mentions spiked 340% within 2 hours." },
+    { symbol: 'SOL',  title: 'SOL DEX Volume Record',     time: '5h ago', impact: 'Medium', summary: 'Solana-based DEXs hit $1.2B in 24h volume. Community discussion trending across X and Farcaster.' },
+    { symbol: 'PEPE', title: 'PEPE Social Surge',         time: '8h ago', impact: 'Medium', summary: 'PEPE token gained 31% in social mentions. Coordinated community campaign detected.' },
   ]
   return (
-    <div className="tab-panel">
-      <div className="tab-panel-header">
-        <span className="tab-panel-title">Event Summary</span>
-        <span className="tab-period-badge">Today</span>
+    <>
+      <div className="pp-panel-head">
+        <span className="pp-panel-title">Event Summary</span>
+        <span className="pp-badge-period">Today</span>
       </div>
       {events.map((e, i) => (
-        <div key={i} className="tab-event-row" style={{ animationDelay: `${i * 80}ms` }}>
-          <div className="tab-event-top">
+        <div key={i} className="pp-event" style={{ '--i': i } as React.CSSProperties}>
+          <div className="pp-event-top">
             <TokenIcon symbol={e.symbol} image={getTokenData(e.symbol).image} size={16} />
-            <span className="tab-event-title">{e.title}</span>
-            <span className={`tab-event-impact ${e.impact.toLowerCase()}`}>{e.impact}</span>
-            <span className="tab-event-time">{e.time}</span>
+            <span className="pp-event-title">{e.title}</span>
+            <span className={`pp-impact ${e.impact.toLowerCase()}`}>{e.impact}</span>
+            <span className="pp-event-time">{e.time}</span>
           </div>
-          <div className="tab-event-summary">{e.summary}</div>
+          <p className="pp-event-body">{e.summary}</p>
         </div>
       ))}
-    </div>
+    </>
   )
 }
 
-function TrendingContractsPanel() {
-  const contracts = [
-    { address: '0x6982...7855', label: 'PEPE',  chain: 'ETH', mentions: '4.2K', change: '+88%' },
-    { address: '7vfCX...Hp2j', label: 'BONK',  chain: 'SOL', mentions: '3.1K', change: '+64%' },
-    { address: '0x1f98...0505', label: 'UNI V3', chain: 'ETH', mentions: '2.8K', change: '+41%' },
-    { address: 'EPjFW...ut1v', label: 'USDC',  chain: 'SOL', mentions: '2.3K', change: '+29%' },
+function ContractsPanel() {
+  const rows = [
+    { label: 'PEPE',  addr: '0x6982...7855', chain: 'ETH', mentions: '4.2K', change: '+88%' },
+    { label: 'BONK',  addr: '7vfCX...Hp2j', chain: 'SOL', mentions: '3.1K', change: '+64%' },
+    { label: 'UNI V3',addr: '0x1f98...0505', chain: 'ETH', mentions: '2.8K', change: '+41%' },
+    { label: 'USDC',  addr: 'EPjFW...ut1v', chain: 'SOL', mentions: '2.3K', change: '+29%' },
   ]
   return (
-    <div className="tab-panel">
-      <div className="tab-panel-header">
-        <span className="tab-panel-title">Trending Contract Addresses</span>
-        <span className="tab-live-badge">LIVE</span>
+    <>
+      <div className="pp-panel-head">
+        <span className="pp-panel-title">Trending Contracts</span>
+        <span className="pp-badge-live">LIVE</span>
       </div>
-      <div className="tab-panel-cols">
-        <span className="col-label">Contract</span>
-        <span className="col-label">Chain</span>
-        <span className="col-label right">Mentions</span>
-        <span className="col-label right">24h</span>
+      <div className="pp-col-row" style={{ gridTemplateColumns: '1fr 56px 80px 60px' }}>
+        <span className="pp-col">Contract</span>
+        <span className="pp-col center">Chain</span>
+        <span className="pp-col right">Mentions</span>
+        <span className="pp-col right">24h</span>
       </div>
-      {contracts.map((c, i) => (
-        <div key={i} className="tab-contract-row" style={{ animationDelay: `${i * 70}ms` }}>
-          <span className="tab-contract-identity">
-            <span className="tab-contract-label">{c.label}</span>
-            <span className="tab-contract-address">{c.address}</span>
+      {rows.map((r, i) => (
+        <div key={i} className="pp-contract-row" style={{ '--i': i } as React.CSSProperties}>
+          <span className="pp-contract-id">
+            <span className="pp-contract-label">{r.label}</span>
+            <span className="pp-contract-addr">{r.addr}</span>
           </span>
-          <span className={`tab-chain-badge chain-${c.chain.toLowerCase()}`}>{c.chain}</span>
-          <span className="tab-mentions">{c.mentions}</span>
-          <span className="tab-change positive">{c.change}</span>
+          <span className={`pp-chain chain-${r.chain.toLowerCase()}`}>{r.chain}</span>
+          <span className="pp-mentions">{r.mentions}</span>
+          <span className="pp-change pos">{r.change}</span>
         </div>
       ))}
-    </div>
+    </>
   )
 }
 
-const PANEL_MAP: Record<Tab, React.ReactNode> = {
-  'Trending Tokens':      <TrendingTokensPanel />,
-  'Smart Stats':          <SmartStatsPanel />,
-  'Top Mentions':         <TopMentionsPanel />,
-  'Multi Keyword Search': <MultiKeywordPanel />,
-  'Event Summary':        <EventSummaryPanel />,
-  'Trending Contracts':   <TrendingContractsPanel />,
+const PANELS: Record<NavId, React.ReactNode> = {
+  trending:  <TrendingPanel />,
+  stats:     <StatsPanel />,
+  mentions:  <MentionsPanel />,
+  search:    <SearchPanel />,
+  events:    <EventsPanel />,
+  contracts: <ContractsPanel />,
 }
 
-const TAB_INTERVAL = 4000
+const SWITCH_MS = 5000
 
-// ─── Main component ───────────────────────────────────────────────────────────
+// ─── Main ─────────────────────────────────────────────────────────────────────
 
 export default function ProductPreview() {
-  const sectionRef  = useRef<HTMLElement>(null)
-  const timerRef    = useRef<ReturnType<typeof setInterval> | null>(null)
-  const [active, setActive]     = useState(false)
-  const [tab, setTab]           = useState<Tab>('Trending Tokens')
-  const [animKey, setAnimKey]   = useState(0)   // forces re-mount of panel for animation
+  const sectionRef = useRef<HTMLElement>(null)
+  const [visible, setVisible]   = useState(false)
+  const [active, setActive]     = useState<NavId>('trending')
+  const [animKey, setAnimKey]   = useState(0)
   const [paused, setPaused]     = useState(false)
+  const [progress, setProgress] = useState(0)
 
-  // Trigger entrance when section enters viewport
+  // Intersection observer — trigger once
   useEffect(() => {
     const el = sectionRef.current
     if (!el) return
-    const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setActive(true); observer.disconnect() } },
-      { threshold: 0.2 }
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect() } },
+      { threshold: 0.15 }
     )
-    observer.observe(el)
-    return () => observer.disconnect()
+    obs.observe(el)
+    return () => obs.disconnect()
   }, [])
 
-  const switchTab = useCallback((next: Tab) => {
-    setTab(next)
-    setAnimKey(k => k + 1)
-  }, [])
-
-  // Auto-advance tabs
+  // Auto-advance
   useEffect(() => {
-    if (!active || paused) return
-    timerRef.current = setInterval(() => {
-      setTab(prev => {
-        const idx  = TABS.indexOf(prev)
-        const next = TABS[(idx + 1) % TABS.length]
+    if (!visible || paused) return
+    const ids = NAV_ITEMS.map(n => n.id)
+    const t = setInterval(() => {
+      setActive(prev => {
+        const next = ids[(ids.indexOf(prev) + 1) % ids.length]
         setAnimKey(k => k + 1)
         return next
       })
-    }, TAB_INTERVAL)
-    return () => { if (timerRef.current) clearInterval(timerRef.current) }
-  }, [active, paused])
+    }, SWITCH_MS)
+    return () => clearInterval(t)
+  }, [visible, paused])
 
-  const handleTabClick = (t: Tab) => {
-    switchTab(t)
-    setPaused(true) // user took control — stop auto-advance
-  }
-
-  // Progress bar resets on tab change
-  const [progress, setProgress] = useState(0)
+  // Progress bar
   useEffect(() => {
-    if (!active || paused) return
+    if (!visible || paused) return
     setProgress(0)
     const start = Date.now()
-    const raf = () => {
-      const elapsed = Date.now() - start
-      setProgress(Math.min((elapsed / TAB_INTERVAL) * 100, 100))
-      if (elapsed < TAB_INTERVAL) requestAnimationFrame(raf)
+    let raf: number
+    const tick = () => {
+      const p = Math.min(((Date.now() - start) / SWITCH_MS) * 100, 100)
+      setProgress(p)
+      if (p < 100) raf = requestAnimationFrame(tick)
     }
-    requestAnimationFrame(raf)
-  }, [tab, active, paused])
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [active, visible, paused])
+
+  const handleNav = (id: NavId) => {
+    setActive(id)
+    setAnimKey(k => k + 1)
+    setPaused(true)
+  }
 
   return (
     <section id="product" className="product-preview" ref={sectionRef}>
@@ -315,55 +347,56 @@ export default function ProductPreview() {
         </div>
 
         <div
-          className="product-screenshot"
+          className="pp-shell"
           style={{
-            opacity: active ? 1 : 0,
-            transform: active ? 'translateY(0) scale(1)' : 'translateY(40px) scale(0.98)',
-            transition: 'opacity 0.7s ease, transform 0.7s ease',
+            opacity:    visible ? 1 : 0,
+            transform:  visible ? 'translateY(0) scale(1)' : 'translateY(36px) scale(0.97)',
+            transition: 'opacity 0.8s cubic-bezier(0.4,0,0.2,1), transform 0.8s cubic-bezier(0.4,0,0.2,1)',
           }}
         >
-          <div className="browser-frame">
-            {/* Browser chrome */}
-            <div className="browser-header">
-              <div className="browser-dots">
-                <span className="dot red" />
-                <span className="dot yellow" />
-                <span className="dot green" />
-              </div>
-              <div className="browser-address">app-nekosinga.vercel.app</div>
+          {/* ── Browser chrome ── */}
+          <div className="pp-chrome">
+            <div className="pp-dots">
+              <span className="dot red" /><span className="dot yellow" /><span className="dot green" />
             </div>
+            <div className="pp-address">app-nekosinga.vercel.app</div>
+          </div>
 
-            {/* Tab bar */}
-            <div className="preview-tab-bar">
-              {TABS.map(t => (
-                <button
-                  key={t}
-                  className={`preview-tab-btn ${tab === t ? 'active' : ''}`}
-                  onClick={() => handleTabClick(t)}
-                >
-                  {t}
-                  {tab === t && !paused && (
-                    <span
-                      className="preview-tab-progress"
-                      style={{ width: `${progress}%` }}
-                    />
-                  )}
-                </button>
-              ))}
-            </div>
+          {/* ── App layout ── */}
+          <div className="pp-app">
 
-            {/* Panel content */}
-            <div className="preview-panel-wrap">
-              <div key={animKey} className="preview-panel-animate">
-                {PANEL_MAP[tab]}
+            {/* Sidebar */}
+            <aside className="pp-sidebar">
+              <div className="pp-sidebar-brand">
+                <img src="/nekosinga-icon.png" alt="" width={24} height={24} />
+                <span className="pp-sidebar-name">Neko Singa</span>
               </div>
-            </div>
+
+              <nav className="pp-nav">
+                {NAV_ITEMS.map(item => (
+                  <button
+                    key={item.id}
+                    className={`pp-nav-item ${active === item.id ? 'active' : ''}`}
+                    onClick={() => handleNav(item.id)}
+                  >
+                    <span className="pp-nav-icon">{item.icon}</span>
+                    <span className="pp-nav-label">{item.label}</span>
+                    {active === item.id && !paused && (
+                      <span className="pp-nav-progress" style={{ width: `${progress}%` }} />
+                    )}
+                  </button>
+                ))}
+              </nav>
+            </aside>
+
+            {/* Content */}
+            <main className="pp-content">
+              <div key={animKey} className="pp-panel-in">
+                {PANELS[active]}
+              </div>
+            </main>
           </div>
         </div>
-
-        {!paused && (
-          <p className="preview-hint">Click any tab to explore</p>
-        )}
       </div>
     </section>
   )

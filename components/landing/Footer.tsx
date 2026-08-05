@@ -9,10 +9,7 @@ export default function Footer() {
               <span className="logo-text">Neko Singa</span>
             </a>
             <p className="footer-tagline">
-              Crypto market intelligence for the signal-driven.
-            </p>
-            <p className="footer-tagline-sub">
-              Track trending tokens, social sentiment, and market signals in one focused dashboard. Built for traders, researchers, and crypto-native teams who want signal, not noise.
+              Crypto market intelligence for the signal-driven. Track trending tokens, social sentiment, and market signals in one focused dashboard.
             </p>
           </div>
 

@@ -3,6 +3,7 @@ import Navbar from '../components/landing/Navbar'
 import Hero from '../components/landing/Hero'
 import SignalStrip from '../components/landing/SignalStrip'
 import ProductPreview from '../components/landing/ProductPreview'
+import MascotSection from '../components/landing/MascotSection'
 import FeatureGrid from '../components/landing/FeatureGrid'
 import AIIntelligence from '../components/landing/AIIntelligence'
 import TokenShowcase from '../components/landing/TokenShowcase'
@@ -17,6 +18,7 @@ export default function Home() {
       <Hero />
       <SignalStrip />
       <ProductPreview />
+      <MascotSection />
       <FeatureGrid />
       <AIIntelligence />
       <TokenShowcase />

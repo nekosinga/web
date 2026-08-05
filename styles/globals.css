@@ -636,6 +636,101 @@ button {
 }
 
 /* ========================================
+   Mascot Section
+   ======================================== */
+
+.mascot-section {
+  padding: 80px 0;
+  background: var(--warm-cream);
+  border-top: 1px solid var(--light-border);
+  border-bottom: 1px solid var(--light-border);
+  overflow: hidden;
+}
+
+.mascot-section-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  position: relative;
+}
+
+.mascot-section-img {
+  width: 260px;
+  height: auto;
+  object-fit: contain;
+  flex-shrink: 0;
+  animation: mascotFloat 4s ease-in-out infinite;
+}
+
+@keyframes mascotFloat {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-12px); }
+}
+
+.mascot-section-inner .floating-card {
+  position: static;
+  animation: none;
+  transform: none;
+  min-width: 160px;
+}
+
+.mascot-card-1 { animation: cardFloat1 4s ease-in-out infinite !important; }
+.mascot-card-2 { animation: cardFloat2 4s ease-in-out 0.5s infinite !important; }
+.mascot-card-3 { animation: cardFloat3 4s ease-in-out 1s infinite !important; }
+.mascot-card-4 { animation: cardFloat4 4s ease-in-out 1.5s infinite !important; }
+
+@keyframes cardFloat1 {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-8px); }
+}
+@keyframes cardFloat2 {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-6px); }
+}
+@keyframes cardFloat3 {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-10px); }
+}
+@keyframes cardFloat4 {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-7px); }
+}
+
+@media (max-width: 1024px) {
+  .mascot-section-inner {
+    gap: 24px;
+  }
+  .mascot-section-img {
+    width: 200px;
+  }
+  .mascot-section-inner .floating-card {
+    min-width: 130px;
+  }
+}
+
+@media (max-width: 768px) {
+  .mascot-section-inner {
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .mascot-section-img {
+    width: 180px;
+    order: -1;
+    flex-basis: 100%;
+    margin: 0 auto;
+    display: block;
+  }
+  .mascot-card-1, .mascot-card-2, .mascot-card-3, .mascot-card-4 {
+    flex: 1;
+    min-width: 140px;
+  }
+}
+
+/* ========================================
    Product Preview — Animated Dashboard
    ======================================== */
 

@@ -105,6 +105,32 @@ export default function ProductPreview() {
             transition: 'opacity 0.6s ease, transform 0.6s ease',
           }}
         >
+          {/* Mascot + floating cards above browser */}
+          <div className="product-mascot-row">
+            <div className="floating-card card-1">
+              <div className="card-label">TRENDING</div>
+              <div className="card-token-row">
+                <TokenIcon symbol="SOL" image={getTokenData('SOL').image} size={20} />
+                <span className="card-token">$SOL</span>
+              </div>
+              <div className="card-metric positive">+42.8% mentions</div>
+            </div>
+
+            <img src="/nekosinga-logo.png" alt="Neko Singa" className="product-mascot" />
+
+            <div className="floating-card card-right">
+              <div className="card-label">SENTIMENT</div>
+              <div className="card-token-row">
+                <TokenIcon symbol="BTC" image={getTokenData('BTC').image} size={20} />
+                <span className="card-token">BTC</span>
+              </div>
+              <div className="card-sentiment">
+                <span className="sentiment-badge bullish">Bullish</span>
+                <span className="sentiment-value">72%</span>
+              </div>
+            </div>
+          </div>
+
           <div className="browser-frame">
             {/* Browser chrome */}
             <div className="browser-header">

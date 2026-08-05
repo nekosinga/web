@@ -263,15 +263,12 @@ button {
   padding: 120px 32px 80px;
   max-width: var(--max-width);
   margin: 0 auto;
-  position: relative;
 }
 
 .hero-content {
   text-align: center;
-  max-width: 880px;
+  max-width: 860px;
   margin: 0 auto;
-  position: relative;
-  z-index: 2;
 }
 
 .hero-eyebrow {
@@ -516,6 +513,33 @@ button {
 
 .product-screenshot {
   margin-top: 64px;
+}
+
+/* Mascot row above browser */
+.product-mascot-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 32px;
+  margin-bottom: -1px;
+  position: relative;
+  z-index: 1;
+}
+
+.product-mascot {
+  width: 200px;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  position: relative;
+  bottom: -4px;
+}
+
+.product-mascot-row .floating-card {
+  position: static;
+  animation: none;
+  transform: none;
+  margin-bottom: 16px;
 }
 
 .browser-frame {
@@ -1710,31 +1734,35 @@ button {
   .hero-headline {
     font-size: 40px;
   }
-  
+
   .hero-description {
     font-size: 17px;
   }
-  
+
   .hero-cta {
     flex-direction: column;
   }
-  
+
   .hero-cta button {
     width: 100%;
   }
-  
-  .hero-visuals {
-    min-height: 300px;
+
+  .product-mascot-row {
+    gap: 16px;
   }
-  
-  .mascot-image {
-    width: 200px;
+
+  .product-mascot {
+    width: 140px;
   }
-  
+
+  .product-mascot-row .floating-card {
+    padding: 12px 14px;
+  }
+
   .section-header h2 {
     font-size: 32px;
   }
-  
+
   .section-description {
     font-size: 16px;
   }

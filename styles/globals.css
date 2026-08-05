@@ -2192,7 +2192,12 @@ button {
   :root {
     --section-padding: 60px;
   }
-  
+
+  /* Navbar */
+  .navbar-content {
+    padding: 16px 20px;
+  }
+
   .navbar-links {
     display: none;
   }
@@ -2206,118 +2211,150 @@ button {
     right: 0;
     background: white;
     border-bottom: 1px solid var(--light-border);
-    padding: 24px 32px;
+    padding: 24px 20px;
     gap: 20px;
+    z-index: 99;
   }
   
   .mobile-menu-btn {
     display: block;
   }
 
+  /* Hero */
   .hero {
-    padding: 80px 24px 60px;
-  }
-
-  .hero-typewriter {
-    font-size: 13px;
+    padding: 72px 20px 48px;
   }
 
   .hero-headline {
-    font-size: 40px;
+    font-size: 36px;
+    letter-spacing: -0.02em;
   }
 
   .hero-description {
-    font-size: 17px;
+    font-size: 16px;
   }
 
   .hero-cta {
     flex-direction: column;
+    align-items: stretch;
   }
 
-  .hero-cta button {
+  .hero-cta .btn-primary,
+  .hero-cta .btn-secondary {
     width: 100%;
+    text-align: center;
   }
 
-  .product-mascot-row {
-    gap: 16px;
+  /* Section common */
+  .section-content {
+    padding: 0 20px;
   }
 
-  .product-mascot {
-    width: 140px;
-  }
-
-  .product-mascot-row .floating-card {
-    padding: 12px 14px;
+  .section-header {
+    margin-bottom: 40px;
   }
 
   .section-header h2 {
-    font-size: 32px;
+    font-size: 28px;
   }
 
   .section-description {
-    font-size: 16px;
+    font-size: 15px;
   }
-  
+
+  /* Signal strip */
   .signal-strip-items {
-    gap: 24px;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
   }
-  
-  .dashboard-mockup {
-    flex-direction: column;
+
+  /* Product preview */
+  .pp-shell {
+    margin-top: 32px;
+    border-radius: 12px;
   }
-  
-  .sidebar-mock {
-    width: 100%;
-    height: 60px;
-  }
-  
-  .cards-mock {
+
+  /* Feature grid */
+  .features {
     grid-template-columns: 1fr;
+    gap: 20px;
   }
-  
+
+  /* How it works */
   .steps {
     flex-direction: column;
-    gap: 48px;
+    gap: 40px;
   }
   
   .step-arrow {
     display: none;
   }
-  
-  .cta-headline {
-    font-size: 36px;
-  }
-  
-  .cta-buttons {
-    flex-direction: column;
-  }
-  
-  .cta-buttons button {
-    width: 100%;
+
+  /* AI Intelligence */
+  .ai-interface {
+    padding: 20px;
   }
 
+  .prompts-list {
+    grid-template-columns: 1fr;
+  }
+
+  /* Token showcase */
+  .metric-group {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  /* Final CTA */
+  .cta-headline {
+    font-size: 30px;
+  }
+
+  .cta-buttons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .cta-buttons .btn-primary,
+  .cta-buttons .btn-secondary {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* Footer */
   .footer-main {
     grid-template-columns: 1fr;
-    gap: 40px;
+    gap: 36px;
   }
-  
+
   .footer-links {
     grid-template-columns: repeat(2, 1fr);
-    gap: 32px;
+    gap: 24px;
+  }
+
+  .footer-content {
+    padding: 0 20px;
   }
 }
 
 @media (max-width: 480px) {
   .hero-headline {
-    font-size: 32px;
+    font-size: 30px;
   }
-  
+
+  .section-header h2 {
+    font-size: 26px;
+  }
+
   .signal-strip-items {
-    flex-direction: column;
-    gap: 16px;
+    gap: 14px;
   }
-  
+
   .footer-links {
     grid-template-columns: 1fr;
+  }
+
+  .mascot-section {
+    padding: 48px 0;
   }
 }

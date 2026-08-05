@@ -1008,6 +1008,7 @@ button {
   height: auto;
   object-fit: contain;
   flex-shrink: 0;
+  border-radius: 32px;
   animation: mascotFloat 4s ease-in-out infinite;
 }
 

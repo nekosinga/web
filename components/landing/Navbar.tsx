@@ -25,6 +25,14 @@ export default function Navbar() {
           <a href="#features">Features</a>
           <a href="#intelligence">Intelligence</a>
           <a href="#how-it-works">How It Works</a>
+          <a
+            href="https://app-nekosinga.vercel.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-primary mobile-launch-btn"
+          >
+            Launch App →
+          </a>
         </div>
 
         <div className="navbar-actions">

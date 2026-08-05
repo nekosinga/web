@@ -2127,11 +2127,19 @@ button {
   color: rgba(255, 255, 255, 0.6);
   line-height: 1.6;
   max-width: 280px;
+  margin-bottom: 12px;
+}
+
+.footer-tagline-sub {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.35);
+  line-height: 1.7;
+  max-width: 300px;
 }
 
 .footer-links {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 40px;
 }
 

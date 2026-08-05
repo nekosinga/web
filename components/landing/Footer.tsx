@@ -11,6 +11,9 @@ export default function Footer() {
             <p className="footer-tagline">
               Crypto market intelligence for the signal-driven.
             </p>
+            <p className="footer-tagline-sub">
+              Track trending tokens, social sentiment, and market signals in one focused dashboard. Built for traders, researchers, and crypto-native teams who want signal, not noise.
+            </p>
           </div>
 
           <div className="footer-links">
@@ -24,13 +27,7 @@ export default function Footer() {
 
             <div className="footer-column">
               <h4 className="footer-heading">Resources</h4>
-              <a href="#how-it-works">How It Works</a>
               <a href="https://docs-nekosinga.vercel.app/" target="_blank" rel="noopener noreferrer">Documentation</a>
-            </div>
-
-            <div className="footer-column">
-              <h4 className="footer-heading">Social</h4>
-              <a href="https://x.com/nekosinga" target="_blank" rel="noopener noreferrer">X</a>
               <a href="https://github.com/nekosinga" target="_blank" rel="noopener noreferrer">GitHub</a>
             </div>
           </div>
